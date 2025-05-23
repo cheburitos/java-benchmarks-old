@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PrintAssembly {
 
-    String printMethod();
+    String printMethod() default "";
 
     int complexity() default 1;
 }

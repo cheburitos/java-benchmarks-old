@@ -46,7 +46,7 @@ public class BenchmarkRunner {
             PrintAssembly printAssembly = clazz.getAnnotation(PrintAssembly.class);
             if (printAssembly != null) {
                 String classNamePrintAsm = printAssembly.printMethod();
-                if (classNamePrintAsm != null) {
+                if (classNamePrintAsm != null && !classNamePrintAsm.isEmpty()) {
                     forkJvmArgs.add("-XX:CompileCommand=print,*" + printAssembly.printMethod());
                 } else {
                     forkJvmArgs.add("-XX:CompileCommand=print,*" + clazz.getSimpleName() + ".*");
