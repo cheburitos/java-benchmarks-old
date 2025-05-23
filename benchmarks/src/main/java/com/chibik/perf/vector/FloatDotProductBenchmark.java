@@ -1,3 +1,4 @@
+/*
 package com.chibik.perf.vector;
 
 import com.chibik.perf.BenchmarkRunner;
@@ -9,9 +10,11 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+*/
 /*
 * https://www.elastic.co/blog/accelerating-vector-search-simd-instructions
-*/
+*//*
+
 @State(Scope.Benchmark)
 @AvgTimeBenchmark(warmupIterations = 5, iterations = 5)
 public class FloatDotProductBenchmark {
@@ -89,10 +92,12 @@ public class FloatDotProductBenchmark {
             throw new IllegalArgumentException("vector dimensions differ: " + a.length + "!=" + b.length);
         }
         float res = 0f;
-        /*
+        */
+/*
          * If length of vector is larger than 8, we use unrolled dot product to accelerate the
          * calculation.
-         */
+         *//*
+
         int i;
         for (i = 0; i < a.length % 8; i++) {
             res += b[i] * a[i];
@@ -155,4 +160,4 @@ public class FloatDotProductBenchmark {
     public static void main(String[] args) {
         BenchmarkRunner.run(FloatDotProductBenchmark.class);
     }
-}
+}*/
