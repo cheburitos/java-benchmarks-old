@@ -1,12 +1,9 @@
 package com.chibik.perf;
 
 import com.chibik.perf.util.*;
-import org.apache.commons.lang3.SystemUtils;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.infra.BenchmarkParams;
 import org.openjdk.jmh.profile.GCProfiler;
-import org.openjdk.jmh.profile.LinuxPerfAsmProfiler;
-import org.openjdk.jmh.profile.LinuxPerfNormProfiler;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.BenchmarkList;
 import org.openjdk.jmh.runner.BenchmarkListEntry;
@@ -48,9 +45,16 @@ public class BenchmarkRunner {
 
             PrintAssembly printAssembly = clazz.getAnnotation(PrintAssembly.class);
             if (printAssembly != null) {
-                forkJvmArgs.add("-XX:CompileCommand=print,*" + clazz.getSimpleName() + ".*");
+                String classNamePrintAsm = printAssembly.printMethod();
+                if (classNamePrintAsm != null) {
+                    forkJvmArgs.add("-XX:CompileCommand=print,*" + printAssembly.printMethod());
+                } else {
+                    forkJvmArgs.add("-XX:CompileCommand=print,*" + clazz.getSimpleName() + ".*");
+                }
+
                 forkJvmArgs.add("-XX:PrintAssemblyOptions=intel,hsdis-help");
                 forkJvmArgs.add("-XX:-UseCompressedOops");
+                forkJvmArgs.add("-XX:-TieredCompilation");
                 forkJvmArgs.add("-XX:+DebugNonSafepoints");
                 if (forkJvmArgs.stream().noneMatch(text -> text.toLowerCase().contains("gc"))) {
                     forkJvmArgs.add("-XX:+UseParallelGC");
@@ -104,7 +108,7 @@ public class BenchmarkRunner {
                 optionsBuilder = optionsBuilder.timeUnit(ssBench.timeUnit());
             }
 
-            PerfCounterProfiled perfCounters = clazz.getAnnotation(PerfCounterProfiled.class);
+/*            PerfCounterProfiled perfCounters = clazz.getAnnotation(PerfCounterProfiled.class);
 
             if (perfCounters != null && perfCounters.value().length > 0 && SystemUtils.IS_OS_LINUX) {
                 optionsBuilder.addProfiler(LinuxPerfNormProfiler.class, "events=" + String.join(",", perfCounters.value()));
@@ -112,7 +116,7 @@ public class BenchmarkRunner {
 
             if (printAssembly != null && SystemUtils.IS_OS_LINUX) {
                 optionsBuilder.addProfiler(LinuxPerfAsmProfiler.class);
-            }
+            }*/
 
             Collection<RunResult> runResults = new Runner(optionsBuilder.build()).run();
             printResults(clazz, runResults);
